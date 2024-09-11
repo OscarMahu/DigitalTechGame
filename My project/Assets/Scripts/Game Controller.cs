@@ -1,6 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq.Expressions;
+using System.Numerics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,7 +12,9 @@ public class GameController : MonoBehaviour
     // Setting public Variables which can be assigned in unity to different Objects / UI
     public static GameController instance;
     public GameObject objectiveContainer, hudContainer, gameOverScreen;
-    public Text objectiveCounter, timeCounter, endTime, countdownText;
+    public Text objectiveCounter, timeCounter, endTime, countdownText, objectiveMsg;
+    public string congratulation = "Good Job Collecting Plastic\r\nBy Doing good things like this and applying them\r\nto your life you can help save the Planet!";
+    public string notcongratulation = " ";
 
     // Setting up other Variabels (e.g. GamePlaying which can be read anywhere but only modified in this file)
     public bool gamePlaying { get; private set; }
@@ -30,6 +35,7 @@ public class GameController : MonoBehaviour
     {   
         gameOverScreen.SetActive(false);
         hudContainer.SetActive(true);
+        objectiveMsg.text = notcongratulation;
         numTotalobjectives = objectiveContainer.transform.childCount;
         numCollectedObjectives = 0;
         objectiveCounter.text = "Plastic: 0 / " + numTotalobjectives;
@@ -64,11 +70,17 @@ public class GameController : MonoBehaviour
         numCollectedObjectives ++;
         string objectiveCounterString = "Plastic: " + numCollectedObjectives + " / " + numTotalobjectives; 
         objectiveCounter.text = objectiveCounterString;
+        objectiveMsg.text = congratulation;
+        Invoke("ObjMsg", 2);
 
-        if(numCollectedObjectives >= numTotalobjectives)
+        if (numCollectedObjectives >= numTotalobjectives)
         {
             EndGame();
         }
+    }
+    private void ObjMsg()
+    {
+        objectiveMsg.text = notcongratulation;
     }
 
     // When the game is completed this function is called I firstly stop player movement and then show the game over screen after that.
